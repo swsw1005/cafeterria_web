@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>** Cafeteria **</title>
+
+    <style>
+      * {
+        margin: 0px;
+        padding: 0px;
+        /* font-size: large; */
+      }
+
+      #calframe {
+        max-width: 1000px;
+        background: skyblue;
+      }
+
+      #cal_head {
+        width: 100%;
+        height: 80px;
+        font-size: xx-large;
+        text-align: center;
+        background: aquamarine;
+      }
+
+      #cal_y_m {
+        margin: auto;
+        /* top: 50%; */
+        text-align: center;
+        background: burlywood;
+        width: 70%;
+      }
+
+      #cal_year,
+      #cal_month {
+        border: 1px solid red;
+      }
+
+      #cal_gridframe {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      }
+
+      .aa {
+        border: 1px solid violet;
+      }
+      .aa_head {
+        padding: 5px;
+        font-weight: bolder;
+        text-align: center;
+      }
+
+      .date_head {
+        background: cyan;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .date_num {
+        margin-left: 0.5em;
+        font-weight: bolder;
+        border: 1px dotted red;
+      }
+      .date_cnt {
+        text-align: right;
+        margin-right: 0.5em;
+        font-style: italic;
+        border: 1px dotted blue;
+      }
+
+      .ul {
+        text-decoration-style: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="calframe">
+      <div id="cal_head">
+        <span id="cal_y_m">
+          <a id="cal_year">2020</a>
+          <a id="cal_month">05</a>
+        </span>
+      </div>
+      <p></p>
+      <div id="cal_gridframe">
+        <!-- /// -->
+        <div class="aa_head">일</div>
+        <div class="aa_head">월</div>
+        <div class="aa_head">화</div>
+        <div class="aa_head">수</div>
+        <div class="aa_head">목</div>
+        <div class="aa_head">금</div>
+        <div class="aa_head">토</div>
+
+        <div class="void, aa"></div>
+        <div class="void, aa"></div>
+        <div class="void, aa"></div>
+
+        <!-- date.aa -->
+        <div class="date, aa">
+          <div class="date_head">
+            <div class="date_num">1</div>
+            <div class="date_cnt">2</div>
+          </div>
+          <div class="date_menu1">밥</div>
+          <div class="date_menu2">국</div>
+          <div class="date_menu3">김치</div>
+          <div class="date_menu4">계란말이</div>
+          <div class="date_menu5">요거트</div>
+        </div>
+        <!-- ............. -->
+
+        <div class="void, aa"></div>
+        <div class="void, aa"></div>
+        <div class="void, aa"></div>
+
+        <!-- /// -->
+      </div>
+    </div>
+  </body>
+</html>

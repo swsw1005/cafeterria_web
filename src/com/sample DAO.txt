@@ -1,0 +1,35 @@
+
+        try {
+            // 1+2
+            connect();
+            // 3. 실행 쿼리 - 문자열
+            String sql = "insert into board(no, title, content, writer, pw) "
+                    + " values(board_seq.nextval, ?, ?, ?, ?)";
+            // 4. 실행객체, 데이터 셋팅
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, dto.getTitle());
+            pstmt.setString(2, dto.getContent());
+            pstmt.setString(3, dto.getWriter());
+            pstmt.setString(4, dto.getPw());
+            // 5. 실행
+            // select -> executeQuery(), insert/update/delete->executeUpdate()
+            result = pstmt.executeUpdate();
+            // 6. 결과표시
+            if (result == 1) {
+                System.out.println("BoardDAO.write():글쓰기 성공!");
+            }
+        } catch (Exception e) {
+            // 예외처리
+            e.printStackTrace();
+        } finally {
+            try {
+                // 7. 닫기
+                if (con != null)
+                    con.close();
+                if (pstmt != null)
+                    pstmt.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
