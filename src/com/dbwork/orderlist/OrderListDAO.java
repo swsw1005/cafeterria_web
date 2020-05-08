@@ -19,35 +19,20 @@ public class OrderListDAO {
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    // 1,2
-    void connect() {
-        try {
-            // 1. 드라이버 확인
-            Class.forName(DBInfo.DRIVER);
-            // 2. 연결conn
-            con = DriverManager.getConnection(DBInfo.URL, DBInfo.UID, DBInfo.UPW);
-        } catch (Exception e3) {
-            System.out.println("connect() fail");
-            e3.getStackTrace();
-        } // try-catch end
-    } // connect() end
-
-    // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-    public void select(int yyyymmdd) {
+    public void select(int yyyymmdd) throws Exception {
         System.out.println("--- select " + yyyymmdd);
         String yyyy_mm_dd = yyyymmdd + "";
         yyyy_mm_dd = yyyy_mm_dd.substring(0, 4) + "-" + yyyy_mm_dd.substring(4, 6) + "-" + yyyy_mm_dd.substring(6, 8);
         select(yyyy_mm_dd);
     }
 
-    public void select(String yyyy_mm_dd) {
+    public void select(String yyyy_mm_dd) throws Exception {
         // select 1일 주문내역
         temp_list = new ArrayList<>();
         System.out.println("--- select " + yyyy_mm_dd);
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행쿼리 문자열
             String sql = "select * from orderlist where orderdate=?";
             // 4. 실행객체 데이터세팅
@@ -67,24 +52,12 @@ public class OrderListDAO {
                     // System.out.println("--- " + temp_dto.getNo() + " --- " + temp_dto.getName());
                 } // while end
             } // if end
-        } catch (Exception ex) {
-            ex.getStackTrace();
+        } catch (Exception e) {
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null) {
-                    con.close();
-                }
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (Exception ex2) {
-                ex2.getStackTrace();
-            }
-        } // finally end
+            DBInfo.close(con, pstmt, rs);
+        }
     }
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -117,7 +90,11 @@ public class OrderListDAO {
         Cal_info ci = new Cal_info(yyyymm);
 
         for (int i = 0; i < ci.getMax_day(); i++) {
-            select(yyyymm01 + i);
+            try {
+                select(yyyymm01 + i);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             temp_table.put(i, temp_list);
         }
 
@@ -135,7 +112,11 @@ public class OrderListDAO {
         Cal_info ci = new Cal_info(yyyymm);
 
         for (int i = 0; i < ci.getMax_day(); i++) {
-            select(yyyymm01 + i);
+            try {
+                select(yyyymm01 + i);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             temp_count_table.put(i, temp_list.size());
         }
 
@@ -158,13 +139,13 @@ public class OrderListDAO {
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     // insert() ----- ----- -----
-    public int insert(OrderListDTO dto) {
+    public int insert(OrderListDTO dto) throws Exception {
         // 출력 데이터 선언
         Integer result = 0;
         ///
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행 쿼리 - 문자열
             String sql = "insert into orderlist(no, orderdate, count, name) "
                     + " values((select nvl(max(no), 0) + 1 from orderlist), ?, ?, ?)";
@@ -181,33 +162,24 @@ public class OrderListDAO {
                 System.out.println("OrdeListDAO.insert():주문 성공!");
             }
         } catch (Exception e) {
-            // 예외처리
-            e.printStackTrace();
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null)
-                    con.close();
-                if (pstmt != null)
-                    pstmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DBInfo.close(con, pstmt, rs);
         }
-        ///
         return result;
     } // insert() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     // update() ----- ----- -----
-    public int update(OrderListDTO dto) {
+    public int update(OrderListDTO dto) throws Exception {
         // 출력 데이터 선언
         Integer result = 0;
         ///
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행 쿼리 - 문자열
             String sql = "update orderlist set name=?, count=? where no = ? ";
             // 4. 실행객체, 데이터 셋팅
@@ -223,27 +195,18 @@ public class OrderListDAO {
                 System.out.println("OrdeListDAO.update():수정 성공!");
             }
         } catch (Exception e) {
-            // 예외처리
-            e.printStackTrace();
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null)
-                    con.close();
-                if (pstmt != null)
-                    pstmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DBInfo.close(con, pstmt, rs);
         }
-        ///
         return result;
     } // update() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     // delete() ----- ----- -----
-    public Integer delete(int no) {
+    public Integer delete(int no) throws Exception {
         // dto 넘어왓는지 확인용
         System.out.println("delete OrderList" + no);
         // 출력 데이터 선언
@@ -251,7 +214,7 @@ public class OrderListDAO {
 
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행 쿼리 - 문자열
             String sql = "delete from orderlist where no = ?";
             // 4. 실행객체, 데이터 셋팅
@@ -264,18 +227,10 @@ public class OrderListDAO {
             if (result == 1)
                 System.out.println("OrderListDAO.delete() : 메뉴삭제 성공!");
         } catch (Exception e) {
-            // 예외처리
-            e.printStackTrace();
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null)
-                    con.close();
-                if (pstmt != null)
-                    pstmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DBInfo.close(con, pstmt, rs);
         }
         return result;
     }

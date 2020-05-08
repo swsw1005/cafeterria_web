@@ -19,26 +19,26 @@ public class MenuDAO {
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     // 1,2
-    void connect() {
+    // void connect() {
 
-        System.out.println("---" + getClass().getName());
-        System.out.println("--- --- connect()");
+    // System.out.println("---" + getClass().getName());
+    // System.out.println("--- --- connect()");
 
-        try {
-            // 1. 드라이버 확인
-            Class.forName(DBInfo.DRIVER);
-            // 2. 연결conn
-            con = DriverManager.getConnection(DBInfo.URL, DBInfo.UID, DBInfo.UPW);
-        } catch (Exception e3) {
-            System.out.println("connect() fail");
-            e3.getStackTrace();
-        } // try-catch end
-    } // connect() end
+    // try {
+    // // 1. 드라이버 확인
+    // Class.forName(DBInfo.DRIVER);
+    // // 2. 연결conn
+    // con = DriverManager.getConnection(DBInfo.URL, DBInfo.UID, DBInfo.UPW);
+    // } catch (Exception e3) {
+    // System.out.println("connect() fail");
+    // e3.getStackTrace();
+    // } // try-catch end
+    // } // connect() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     /// select 1일 메뉴
-    public void select(int yyyy, int mm, int dd) {
+    public void select(int yyyy, int mm, int dd) throws Exception {
 
         String y_ = ((yyyy + 10000) + "").substring(1, 5);
         String m_ = ((mm + 10000) + "").substring(3, 5);
@@ -49,7 +49,7 @@ public class MenuDAO {
     }
 
     /// select 1일 메뉴
-    public void select(int yyyymmdd) {
+    public void select(int yyyymmdd) throws Exception {
 
         String yyyy_mm_dd = yyyymmdd + "";
         yyyy_mm_dd = yyyy_mm_dd.substring(0, 4) + "-" + yyyy_mm_dd.substring(4, 6) + "-" + yyyy_mm_dd.substring(6, 8);
@@ -58,13 +58,13 @@ public class MenuDAO {
     }
 
     /// select 1일 메뉴
-    public void select(String yyyy_mm_dd) {
+    public void select(String yyyy_mm_dd) throws Exception {
         // select 1일 주문내역
         temp_dto = new MenuDTO();
         try {
             temp_dto.setOrderdate(yyyy_mm_dd);
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행쿼리 문자열
             String sql = "select * from menu where orderdate=?";
             // 4. 실행객체 데이터세팅
@@ -93,24 +93,12 @@ public class MenuDAO {
                     temp_dto.setMenu(temp_list);
                 } // while end
             } // if end
-        } catch (Exception ex) {
-            ex.getStackTrace();
+        } catch (Exception e) {
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null) {
-                    con.close();
-                }
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (Exception ex2) {
-                ex2.getStackTrace();
-            }
-        } // finally end
+            DBInfo.close(con, pstmt, rs);
+        }
     }// select() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -137,8 +125,11 @@ public class MenuDAO {
         Cal_info ci = new Cal_info(yyyy_mm_);
 
         for (int i = 0; i < ci.getMax_day(); i++) {
-
-            select(yyyymm01 + i);
+            try {
+                select(yyyymm01 + i);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             menu_table.put(i, temp_dto);
         }
         // return menu_table;
@@ -160,13 +151,13 @@ public class MenuDAO {
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    public int insert(MenuDTO dto) {
+    public int insert(MenuDTO dto) throws Exception {
         // 출력 데이터 선언
         Integer result = 0;
         ///
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행 쿼리 - 문자열
             String sql = "insert into menu(orderdate, menu1, menu2, menu3, menu4, menu5) "
                     + " values( ?, ?, ?, ?, ?, ?)";
@@ -186,32 +177,23 @@ public class MenuDAO {
                 System.out.println("MenuDAO.insert():주문 성공!");
             }
         } catch (Exception e) {
-            // 예외처리
-            e.printStackTrace();
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null)
-                    con.close();
-                if (pstmt != null)
-                    pstmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DBInfo.close(con, pstmt, rs);
         }
-        ///
         return result;
     } // insert() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    public int update(MenuDTO dto) {
+    public int update(MenuDTO dto) throws Exception {
         // 출력 데이터 선언
         Integer result = 0;
         ///
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행 쿼리 - 문자열
             String sql = "update menu set menu1 =?, menu2 =?, menu3 =?, menu4 =?, menu5 =? where orderdate = ? ";
             // 4. 실행객체, 데이터 셋팅
@@ -229,26 +211,17 @@ public class MenuDAO {
                 System.out.println("MenuDAO.update():수정 성공!");
             }
         } catch (Exception e) {
-            // 예외처리
-            e.printStackTrace();
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null)
-                    con.close();
-                if (pstmt != null)
-                    pstmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DBInfo.close(con, pstmt, rs);
         }
-        ///
         return result;
     } // update() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    public int delete(int yyyymmdd) {
+    public int delete(int yyyymmdd) throws Exception {
 
         String temp_yyyymmdd = yyyymmdd + "";
         temp_yyyymmdd = temp_yyyymmdd.substring(0, 4) + "-" + temp_yyyymmdd.substring(4, 6) + "-"
@@ -256,7 +229,7 @@ public class MenuDAO {
         return delete(temp_yyyymmdd);
     }
 
-    public int delete(String orderdate) {
+    public int delete(String orderdate) throws Exception {
         // dto 넘어왓는지 확인용
         System.out.println("delete Menu" + orderdate);
         // 출력 데이터 선언
@@ -264,7 +237,7 @@ public class MenuDAO {
 
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행 쿼리 - 문자열
             String sql = "delete from menu where orderdate = ?";
             // 4. 실행객체, 데이터 셋팅
@@ -277,18 +250,10 @@ public class MenuDAO {
             if (result == 1)
                 System.out.println("MenuDAO.delete() : 메뉴삭제 성공!");
         } catch (Exception e) {
-            // 예외처리
-            e.printStackTrace();
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null)
-                    con.close();
-                if (pstmt != null)
-                    pstmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DBInfo.close(con, pstmt, rs);
         }
         return result;
     }

@@ -1,4 +1,4 @@
-package com.dbwork.login;
+package com.dbwork.adminlist;
 
 import java.sql.*;
 import com.dbwork.info.DBInfo;
@@ -15,32 +15,32 @@ public class AdminListDAO {
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    // 1,2
-    public void connect() {
+    // // 1,2
+    // public void connect() {
 
-        System.out.println("---" + getClass().getName());
-        System.out.println("--- --- connect()");
+    // System.out.println("---" + getClass().getName());
+    // System.out.println("--- --- connect()");
 
-        try {
-            // 1. 드라이버 확인
-            Class.forName(DBInfo.DRIVER);
-            // 2. 연결conn
-            con = DriverManager.getConnection(DBInfo.URL, DBInfo.UID, DBInfo.UPW);
-        } catch (Exception e3) {
-            System.out.println("connect() fail");
-            e3.getStackTrace();
-        } // try-catch end
-    } // connect() end
+    // try {
+    // // 1. 드라이버 확인
+    // Class.forName(DBInfo.DRIVER);
+    // // 2. 연결conn
+    // con = DriverManager.getConnection(DBInfo.URL, DBInfo.UID, DBInfo.UPW);
+    // } catch (Exception e3) {
+    // System.out.println("connect() fail");
+    // e3.getStackTrace();
+    // } // try-catch end
+    // } // connect() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    public void select(String id) {
+    public void select(String id) throws Exception {
 
         temp_dto = new AdminListDTO();
 
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행쿼리 문자열
             String sql = "select * from adminlist where id=?";
             // 4. 실행객체 데이터세팅
@@ -56,29 +56,17 @@ public class AdminListDAO {
                     temp_dto.setStatus(rs.getString("status"));
                 } // while end
             } // if end
-        } catch (Exception ex) {
-            ex.getStackTrace();
+        } catch (Exception e) {
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null) {
-                    con.close();
-                }
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (Exception ex2) {
-                ex2.getStackTrace();
-            }
-        } // finally end
+            DBInfo.close(con, pstmt, rs);
+        }
     }// select() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    public int insert(AdminListDTO dto) {
+    public int insert(AdminListDTO dto) throws Exception {
         // dto 넘어왓는지 확인용
         System.out.println("insert AdminList" + dto.getId());
         // 출력 데이터 선언
@@ -86,7 +74,7 @@ public class AdminListDAO {
         ///
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행 쿼리 - 문자열
             String sql = "insert into Adminlist (id, pw, state)   values( ?, ?, '대기')";
             // 4. 실행객체, 데이터 셋팅
@@ -104,23 +92,14 @@ public class AdminListDAO {
             // 예외처리
             e.printStackTrace();
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null)
-                    con.close();
-                if (pstmt != null)
-                    pstmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DBInfo.close(con, pstmt, rs);
         }
-        ///
         return result;
     } // insert() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    public int update(String id, String pw_before, String pw_after) {
+    public int update(String id, String pw_before, String pw_after) throws Exception {
         // dto 넘어왓는지 확인용
         System.out.println("update AdminList");
         // 출력 데이터 선언
@@ -128,7 +107,7 @@ public class AdminListDAO {
         ///
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행 쿼리 - 문자열
             String sql = "update adminlist set pw =?  where id = ? and pw = ?";
             // 4. 실행객체, 데이터 셋팅
@@ -147,23 +126,14 @@ public class AdminListDAO {
             // 예외처리
             e.printStackTrace();
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null)
-                    con.close();
-                if (pstmt != null)
-                    pstmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DBInfo.close(con, pstmt, rs);
         }
-        ///
         return result;
     } // update() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    public int delete(String id_to_delete) {
+    public int delete(String id_to_delete) throws Exception {
         // dto 넘어왓는지 확인용
         System.out.println("delete admin" + id_to_delete);
         // 출력 데이터 선언
@@ -171,7 +141,7 @@ public class AdminListDAO {
 
         try {
             // 1+2
-            connect();
+            con = DBInfo.getConnection();
             // 3. 실행 쿼리 - 문자열
             String sql = "delete from adminlist where id = ?";
             // 4. 실행객체, 데이터 셋팅
@@ -187,15 +157,7 @@ public class AdminListDAO {
             // 예외처리
             e.printStackTrace();
         } finally {
-            try {
-                // 7. 닫기
-                if (con != null)
-                    con.close();
-                if (pstmt != null)
-                    pstmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DBInfo.close(con, pstmt, rs);
         }
         return result;
     }

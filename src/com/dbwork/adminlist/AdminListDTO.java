@@ -1,4 +1,4 @@
-package com.dbwork.login;
+package com.dbwork.adminlist;
 
 import lombok.Getter;
 import lombok.Setter;
