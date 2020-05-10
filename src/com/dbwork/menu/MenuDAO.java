@@ -39,26 +39,23 @@ public class MenuDAO {
 
     /// select 1일 메뉴
     public void select(int yyyy, int mm, int dd) throws Exception {
-
         String y_ = ((yyyy + 10000) + "").substring(1, 5);
         String m_ = ((mm + 10000) + "").substring(3, 5);
         String d_ = ((dd + 10000) + "").substring(3, 5);
         String yyyy_mm_dd = y_ + "-" + m_ + "-" + d_;
-        System.out.println("---" + yyyy_mm_dd);
         select(yyyy_mm_dd);
     }
 
     /// select 1일 메뉴
     public void select(int yyyymmdd) throws Exception {
-
         String yyyy_mm_dd = yyyymmdd + "";
         yyyy_mm_dd = yyyy_mm_dd.substring(0, 4) + "-" + yyyy_mm_dd.substring(4, 6) + "-" + yyyy_mm_dd.substring(6, 8);
-        System.out.println("---" + yyyy_mm_dd);
         select(yyyy_mm_dd);
     }
 
     /// select 1일 메뉴
     public void select(String yyyy_mm_dd) throws Exception {
+        System.out.println("----SELECT() " + yyyy_mm_dd);
         // select 1일 주문내역
         temp_dto = new MenuDTO();
         try {
@@ -75,21 +72,16 @@ public class MenuDAO {
             // 6. 결과표시(ResultSet) + list.add
             if (rs != null) {
                 while (rs.next()) {
-
                     List<String> temp_list = new ArrayList<>();
-
                     for (int i = 1; i <= 5; i++) {
                         try {
                             String temp = rs.getString("menu" + i).trim();
-                            // System.out.println("--- temp : " + temp);
                             temp_list.add(temp);
-                            // System.out.println(temp_list.size());
                         } catch (Exception e) {
                             System.out.println("temp_list.add failed");
                             temp_list.add("");
                         }
                     } // for end
-
                     temp_dto.setMenu(temp_list);
                 } // while end
             } // if end
@@ -116,6 +108,8 @@ public class MenuDAO {
 
     public void select_month(String yyyy_mm_) {
 
+        System.out.println("----SELECT_MONTH() " + yyyy_mm_);
+
         yyyy_mm_ = yyyy_mm_.substring(0, 6);
         int yyyymm01 = Integer.parseInt(yyyy_mm_) * 100 + 01;
 
@@ -127,28 +121,31 @@ public class MenuDAO {
         for (int i = 0; i < ci.getMax_day(); i++) {
             try {
                 select(yyyymm01 + i);
+                menu_table.put(i, temp_dto);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            menu_table.put(i, temp_dto);
         }
         // return menu_table;
     } // select2() end
 
     // ----- ----- -----
+    // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+    // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     // Getter
     public String getMenu(int y, int m, int d, int num) {
-
         String temp = "";
         try {
             temp = menu_table.get(d - 1).getMenu().get(num);
         } catch (Exception e) {
-            temp = "qqq";
+            temp = "(..MenuDAO.getMen() ERROR)";
         }
         return temp;
     }
 
+    // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     public int insert(MenuDTO dto) throws Exception {

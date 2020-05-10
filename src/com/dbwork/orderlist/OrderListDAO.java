@@ -102,25 +102,53 @@ public class OrderListDAO {
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    // select() ----- ----- -----
-    public Hashtable<Integer, Integer> select_count(int yyyymm) {
+    public Integer select_count(int yyyy, int mm, int dd) throws Exception {
 
+        int temp = 0;
+        String yyyy_ = ((yyyy + 10000) + "").substring(1, 5);
+        String mm_ = ((mm + 100) + "").substring(1, 3);
+        String dd_ = ((dd + 100) + "").substring(1, 3);
+        String date = yyyy_ + "-" + mm_ + "-" + dd_;
+
+        try {
+            // 1+2
+            con = DBInfo.getConnection();
+            // 3. 실행쿼리 문자열
+            String sql = "select sum(count) from orderlist where orderdate = ?";
+            // 4. 실행객체 데이터세팅
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, date);
+            // 5. 실행 execute
+            rs = pstmt.executeQuery();
+            // 6. 결과표시(ResultSet) + list.add
+            if (rs != null) {
+                while (rs.next()) {
+                    temp = rs.getInt(1);
+                } // while end
+            } // if end
+        } catch (Exception e) {
+            e.getStackTrace();
+            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
+        } finally {
+            DBInfo.close(con, pstmt, rs);
+        }
+        return temp;
+    }
+
+    // select() ----- ----- -----
+    public void select_count_month(int yyyy, int mm) {
         // 출력용 객체
         Hashtable<Integer, Integer> temp_count_table = new Hashtable<>();
         // select 1달 주문 count
-        int yyyymm01 = yyyymm * 100 + 01;
-        Cal_info ci = new Cal_info(yyyymm);
+        Cal_info ci = new Cal_info(yyyy, mm);
 
         for (int i = 0; i < ci.getMax_day(); i++) {
             try {
-                select(yyyymm01 + i);
+                temp_count_table.put(i, select_count(yyyy, mm, i + 1));
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            temp_count_table.put(i, temp_list.size());
-        }
-
-        return temp_count_table;
+            } // try catch end
+        } // for end
     }// select() end
 
     // ----- ----- -----

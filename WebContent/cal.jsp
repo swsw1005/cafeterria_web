@@ -114,7 +114,7 @@ li {
 		//int y_ = Integer.parseInt(request.getParameter("year"));
 		//int m_ = Integer.parseInt(request.getParameter("month"));
 		int y_ = 2020;
-		int m_ = 4;
+		int m_ = 5;
 
 		// 오늘날짜로 가져오도록
 
@@ -122,9 +122,15 @@ li {
 		int c1 = ci.getVoid_day();
 		int c2 = ci.getMax_day();
 		int c3 = 42 - (c1 + c2);
+		
+		System.out.println("");
+		System.out.println("");
 
 		MenuDAO dao = new MenuDAO();
 		dao.select_month(y_, m_);
+		
+		System.out.println("");
+		System.out.println("");
 
 		OrderListDAO orderDAO = new OrderListDAO();
 		orderDAO.select_all(y_, m_);
@@ -177,7 +183,7 @@ li {
 				%>
 				<div class="date_menu"><%=dao.getMenu(y_, m_, i + 1, j - 1)%></div>
 				<%
-					} //for j (inside for c2)end
+					} //for j (inside for c2)(menu)end
 				%>
 
 			</div>
