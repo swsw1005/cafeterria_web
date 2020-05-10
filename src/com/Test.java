@@ -1,20 +1,17 @@
 package com;
 
-import com.dbwork.menu.MenuDAO;
-import com.dbwork.orderlist.OrderListDAO;
+import java.sql.Date;
+
+import com.dbwork.autodata.OrderListAuto;
+import com.dbwork.autodata.OrderListAutoBuild;
 
 public class Test {
 
     public static void main(String[] args) {
 
-        OrderListDAO dao = new OrderListDAO();
+        OrderListAutoBuild ab = OrderListAutoBuild.builder().min_count_per_order(2).max_count_per_order(10)
+                .min_order_per_day(2).max_order_per_day(5).startDate(new Date(2020, 4, 9)).how_many_days(2).build();
 
-        try {
-            int iii = dao.select_count(2020, 4, 1);
-            System.out.println(iii);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        OrderListAuto oa = new OrderListAuto(ab);
     }
 }
