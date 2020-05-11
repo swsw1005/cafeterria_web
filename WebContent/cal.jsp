@@ -114,7 +114,7 @@ li {
 		//int y_ = Integer.parseInt(request.getParameter("year"));
 		//int m_ = Integer.parseInt(request.getParameter("month"));
 		int y_ = 2020;
-		int m_ = 3;
+		int m_ = 6;
 
 		// 오늘날짜로 가져오도록
 
