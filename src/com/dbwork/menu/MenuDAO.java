@@ -140,7 +140,6 @@ public class MenuDAO {
         try {
             temp = menu_table.get(d - 1).getMenu().get(num);
         } catch (Exception e) {
-            temp = "(..MenuDAO.getMen() ERROR)";
         }
         return temp;
     }

@@ -1,11 +1,12 @@
-<%@page import="com.dbwork.orderlist.OrderListDAO"%>
-<%@page import="com.dbwork.menu.MenuDAO"%>
-<%@page import="com.util.cal_info.Cal_info"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
 <%@ page import="java.util.*"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="com.util.cal_info.*"%>
+<%@ page import="com.dbwork.orderlist.OrderListDAO"%>
+<%@ page import="com.dbwork.menu.MenuDAO"%>
+<%@ page import="com.util.cal_info.Cal_info"%>
 
 <%!//변수 선언%>
 
@@ -20,8 +21,17 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>cal.jsp</title>
+
+<%-- bootstrap 3.4.1 --%>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<%-- jquery 3.4.1 --%>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
 <style>
 * {
 	margin: 0px;
@@ -50,11 +60,7 @@
 	width: 70%;
 }
 
-#cal_year, #cal_month {
-	border: 1px solid red;
-}
-
-#cal_gridframe {
+.cal_gridframe {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 }
@@ -100,9 +106,29 @@
 li {
 	text-decoration-style: none;
 }
+
+#year, #month {
+	width: 130px;
+}
 </style>
 <script>
 	// 스크립트
+	function refresh() {
+		var input_y = $("#year").val().trim();
+		var input_m = $("#month").val().trim();
+		console.log(input_y + " " + input_m);
+
+		$("#cal_grid").load("cal.jsp?y=" + input_y + "&m=" + input_m);
+	} // refresh() end
+
+	function refresh_wait() {
+		setInterval(refresh, 3000);
+	}
+
+	$(function() {
+		//refresh_wait();
+
+	});
 </script>
 </head>
 <body>
@@ -111,10 +137,10 @@ li {
 	<%
 		//자바 구문
 
-		//int y_ = Integer.parseInt(request.getParameter("year"));
-		//int m_ = Integer.parseInt(request.getParameter("month"));
-		int y_ = 2020;
-		int m_ = 6;
+		Calendar cal = Calendar.getInstance();
+
+		int y_ = cal.get(Calendar.YEAR);
+		int m_ = cal.get(Calendar.MONTH) + 1;
 
 		// 오늘날짜로 가져오도록
 
@@ -136,16 +162,20 @@ li {
 		orderDAO.select_all(y_, m_);
 	%>
 
+	<button onclick="refresh()">ddd</button>
+
 	<div id="calframe">
 		<div id="cal_head">
-			<span id="cal_y_m"> <a id="cal_year"><%=y_%></a> <a
-				id="cal_month"><%=m_%></a>
+			<span id="cal_y_m"> <input id="year" type="number"
+				value="<%=y_%>" onchange="refresh()" /> <input id="month"
+				type="number" value="<%=m_%>" onchange="refresh()" />
+
 			</span>
 		</div>
 		<p></p>
 		<!-- ///.......................... -->
 
-		<div id="cal_gridframe">
+		<div class="cal_gridframe">
 			<!-- ///.......................... -->
 			<div class="aa_head">일</div>
 			<div class="aa_head">월</div>
@@ -155,58 +185,17 @@ li {
 			<div class="aa_head">금</div>
 			<div class="aa_head">토</div>
 			<!-- ///.......................... -->
+		</div>
 
-			<%
-				for (int i = 0; i < c1; i++) {
-			%>
-			<div class="void, aa">dev c1</div>
-			<%
-				} //for c1 end
-			%>
-			<!-- ///.......................... -->
-			<%
-				for (int i = 0; i < c2; i++) {
-			%>
-			<!-- date.aa -->
-			<div class="date, aa">
-				<div class="date_head">
-					<div class="date_num">
-						<%=i + 1%>
-					</div>
-					<div class="date_cnt">
-						<%=orderDAO.getOrderCount(i)%>
-					</div>
-				</div>
-
-				<%
-					for (int j = 1; j <= 5; j++) {
-				%>
-				<div class="date_menu"><%=dao.getMenu(y_, m_, i + 1, j - 1)%></div>
-				<%
-					} //for j (inside for c2)(menu)end
-				%>
-
-			</div>
-			<!-- ............. -->
-			<%
-				} //for c2 end
-			%>
-			<!-- ///.......................... -->
-			<%
-				for (int i = 0; i < c3; i++) {
-			%>
-			<div class="void, aa">dev c3</div>
-			<%
-				} //for c3 end
-			%>
-			<!-- ///.......................... -->
+		<div id="cal_grid" class="cal_gridframe">
+			<!-- ...달력 내용 들어간다......... -->
 
 
 
-			<!-- /// -->
 		</div>
 	</div>
 
 </body>
 
 </html>
+
