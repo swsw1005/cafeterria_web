@@ -10,8 +10,6 @@ public class AdminListDAO {
     // Statement stmt = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
-    // 출력 데이터
-    AdminListDTO temp_dto;
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -34,34 +32,35 @@ public class AdminListDAO {
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    public void select(String id) throws Exception {
+    public String select(String id, String pw) throws Exception {
 
-        temp_dto = new AdminListDTO();
+        AdminListDTO temp_dto = new AdminListDTO();
 
         try {
             // 1+2
             con = DBInfo.getConnection();
             // 3. 실행쿼리 문자열
-            String sql = "select * from adminlist where id=?";
+            String sql = "select id, state from adminlist where id=? and pw=?";
             // 4. 실행객체 데이터세팅
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, id);
+            pstmt.setString(2, pw);
             // 5. 실행 execute
             rs = pstmt.executeQuery();
             // 6. 결과표시(ResultSet) + list.add
             if (rs != null) {
                 while (rs.next()) {
-                    temp_dto.setId(rs.getString("id"));
-                    temp_dto.setPw(rs.getString("pw"));
-                    temp_dto.setStatus(rs.getString("status"));
+                    temp_dto.setState(rs.getString("state"));
                 } // while end
             } // if end
         } catch (Exception e) {
             e.getStackTrace();
-            throw new Exception("게시판 리스트 처리하는 중 오류가 발생되었습니보벳따우");
+            throw new Exception("회원정보 조회 중 오류가 발생되었습니");
         } finally {
             DBInfo.close(con, pstmt, rs);
         }
+
+        return temp_dto.getState().trim();
     }// select() end
 
     // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

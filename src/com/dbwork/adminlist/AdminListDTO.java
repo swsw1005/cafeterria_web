@@ -9,6 +9,6 @@ public class AdminListDTO {
 
     private String id;
     private String pw;
-    private String status;
+    private String state;
 
 }

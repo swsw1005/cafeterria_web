@@ -1,24 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
-    />
-    <title>index.html</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <style></style>
-    <script>
-      // 스크립트
-    </script>
-  </head>
-  <body>
-    <!-- 내용 -->
 
-    <input id="year" type="number" onchange="refresh()" />
-    <input id="month" type="number" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>index.html</title>
+  <style>
+    #login {
+      width: 300px;
+      margin: auto;
+      border: 1px solid violet;
+      text-align: center;
+    }
+  </style>
+  <script>
+    // 스크립트
+  </script>
+</head>
 
-    <!-- 내용 -->
-  </body>
+<body>
+  <!-- 내용 -->
+
+  <form action="./login/login.jsp" method="post">
+
+    <div id="login">
+
+      <div class="label">id</div>
+      <input type="text" name="id" id="id">
+      <div class="label">pw</div>
+      <input type="password" name="pw" id="pw">
+      <br>
+      <br>
+      <input type="submit" value="로그인라고 달력으로 이동">
+    </div>
+  </form>
+
+
+  <!-- 내용 -->
+</body>
+
 </html>
